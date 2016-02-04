@@ -1,0 +1,20 @@
+---
+app_user:  eeuser
+app_group: "{{ app_user }}"
+app_name: products
+app_version: 0.0.1
+
+app_work_dir: /opt/ee/{{ app_name }}
+app_conf_dir: "{{ app_work_dir }}/config"
+app_log_dir:  /var/log/{{ app_name }}
+app_pid_dir:  /var/run/{{ app_name }}
+app_artifact_tmp_dir: /var/tmp/{{ app_name }}
+app_artifact: "{{ app_name }}-{{ app_version }}.zip"
+app_artifact_url: "https://s3-eu-west-1.amazonaws.com/ee-microdc/testing/{{ app_artifact }}"
+app_port: 9080
+app_admin_port: 9081
+
+# Network Interfaces
+app_mongo_port: 27017
+app_mongo_host: localhost
+app_mongo_db:   "{{ app_name }}"

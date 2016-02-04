@@ -1,0 +1,30 @@
+# EE MicroDC Application
+
+description "EE MicroDC - {{ app_name }}"
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+expect fork
+
+pre-start script
+    pidfile="{{ app_pid_dir }}/{{ app_name }}.pid"
+    if [ -f $pidfile ]; then
+        pgrep -P `cat $pidfile` || rm -rf $pidfile || true
+    fi
+    PIDPATH=`dirname $pidfile`
+    [ -d ${PIDPATH} ] || mkdir -p ${PIDPATH} && chown -R {{ app_user }}:{{ app_group }} ${PIDPATH}
+end script
+
+script
+    # Defaults
+    NAME={{ app_name }}
+    HOME={{ app_work_dir }}
+    BIN_DIR=$HOME/bin
+
+    # Override our defaults with user defaults:
+    [ -f /etc/default/$NAME ] && . /etc/default/$NAME
+
+    cd "${HOME}"
+	su -s /bin/sh -c 'exec "$0" "$@"' {{ app_user }} -- $BIN_DIR/{{ app_name }} server {{ app_conf_dir }}/config.yml  &> {{ app_log_dir }}/{{ app_name }}.log & 
+end script

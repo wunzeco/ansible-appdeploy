@@ -1,0 +1,13 @@
+
+server:
+  type: default
+  applicationConnectors:
+    - type: http
+      port: {{ app_port|default('9080') }}
+  adminConnectors:
+    - type: http
+      port: {{ app_admin_port|default('9081') }}
+
+mongo:
+  uri: mongodb://{{ app_mongo_host|default('localhost') }}:{{ app_mongo_port|default('27017') }}
+  db:   {{ app_mongo_db|default('products') }}

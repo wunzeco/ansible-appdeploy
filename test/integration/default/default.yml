@@ -1,0 +1,7 @@
+---
+- hosts: test-kitchen
+
+  roles:
+    - wunzeco.java
+    - wunzeco.mongodb
+    - app

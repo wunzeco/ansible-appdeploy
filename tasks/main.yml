@@ -1,0 +1,57 @@
+---
+
+#- name: Stop app
+
+- name: Clean up previous app install
+  file: path={{ item }} state=absent
+  with_items:
+    - "{{ app_work_dir }}"
+    - "{{ app_artifact_tmp_dir }}"
+
+- name: Install pre-requisite packages
+  apt: name={{ item }} state=present
+  with_items:
+    - unzip
+
+- name: Create app group
+  group: name={{ app_group }} state=present
+
+- name: Create app user
+  user: name={{ app_user }} group={{ app_group }} shell=/bin/bash home={{ app_work_dir }} createhome=no state=present
+
+- name: Create app work dir
+  file: path={{ app_work_dir }} owner={{ app_user }} group={{ app_group }} mode=0755 recurse=yes state=directory
+
+- name: Create app log dir
+  file: path={{ app_log_dir }} owner={{ app_user }} group={{ app_group }} mode=0755 state=directory
+
+- name: Create app pid dir
+  file: path={{ app_pid_dir }} owner={{ app_user }} group={{ app_group }} mode=0755 state=directory
+
+- name: Create app artifact tmp dir
+  file: path={{ app_artifact_tmp_dir }} mode=0755 state=directory
+
+- name: Fetch app artifact
+  get_url: url={{ app_artifact_url }} dest={{ app_artifact_tmp_dir }}/{{ app_artifact }} 
+
+- name: Decompress app artifact
+  unarchive: src={{ app_artifact_tmp_dir }}/{{ app_artifact }} dest={{ app_artifact_tmp_dir }} owner={{ app_user }} group={{ app_group }}
+
+- name: Install app
+  synchronize: src={{ app_artifact_tmp_dir }}/{{ app_name }}-{{ app_version }}/ dest={{ app_work_dir }} 
+  delegate_to: "{{ inventory_hostname }}"
+  notify: Restart app
+
+- name: Update app config
+  template: src={{ app_name }}.yml.j2 dest={{ app_conf_dir }}/config.yml
+  notify: Restart app
+
+- name: Ensure app work dir has correct ownership
+  file: path={{ app_work_dir }} owner={{ app_user }} group={{ app_group }} recurse=yes
+
+- name: Create app upstart script
+  template: src=app.upstart.j2 dest=/etc/init/{{ app_name }}.conf
+  notify: Restart app
+
+- name: Start app
+  service: name={{ app_name }} state=started
