@@ -10,4 +10,4 @@ galaxy_info:
         - trusty
   categories:
     - deployment
-  dependencies: []
+dependencies: []
