@@ -1,10 +1,12 @@
 require 'spec_helper'
 
-let(:app_user) { 'eeuser' }
-let(:app_group) { app_user }
-let(:app_name) { 'products' }
-let(:app_port) { 9080 }
-let(:app_work_dir) { "/opts/ee/#{app_name}" }
+app_user = 'eeuser'
+app_group = app_user
+app_name = 'products'
+app_version = '0.0.1'
+app_port = 9080
+app_work_dir = "/opt/ee/#{app_name}"
+app_log_dir = "/var/log/#{app_name}"
 
 describe group(app_group) do
   it { should exist }
@@ -35,7 +37,7 @@ end
 
 %W( 
   bin/#{app_name}
-  lib/#{app_name}.jar
+  lib/#{app_name}-#{app_version}.jar
   config/config.yml 
 ).each do |f|
   describe file("#{app_work_dir}/#{f}") do

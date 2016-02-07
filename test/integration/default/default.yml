@@ -4,4 +4,4 @@
   roles:
     - wunzeco.java
     - wunzeco.mongodb
-    - app
+    - ansible-appdeploy
