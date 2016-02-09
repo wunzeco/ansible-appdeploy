@@ -1,7 +1,12 @@
 ---
 
 - name: Fetch version file
-  s3: bucket={{ app_s3_bucket }} object={{ app_s3_object_prefix }}/version dest={{ app_artifact_tmp_dir }}/version mode=get
+  s3: 
+    bucket: "{{ app_s3_bucket }}"
+    object: "{{ app_s3_object_prefix }}/version"
+    dest: "{{ app_artifact_tmp_dir }}/version"
+    region: "{{ app_s3_region }}"
+    mode: get
 
 - name: Read version file
   command: cat {{ app_artifact_tmp_dir }}/version
@@ -11,4 +16,9 @@
   set_fact: app_version={{ version.stdout }}
 
 - name: Fetch app artifact
-  s3: bucket={{ app_s3_bucket }} object={{ app_s3_object_prefix }}/{{ app_artifact }} dest={{ app_artifact_tmp_dir }}/{{ app_artifact }} mode=get
+  s3: 
+    bucket: "{{ app_s3_bucket }}"
+    object: "{{ app_s3_object_prefix }}/{{ app_artifact }}" 
+    dest: "{{ app_artifact_tmp_dir }}/{{ app_artifact }}"
+    region: "{{ app_s3_region }}"
+    mode: get

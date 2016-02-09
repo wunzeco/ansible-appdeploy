@@ -23,3 +23,4 @@ app_mongo_db:   "{{ app_name }}"
 app_install_from_s3: true
 app_s3_bucket: ee-microdc
 app_s3_object_prefix: "/services/{{ app_name }}"
+app_s3_region: eu-west-1
