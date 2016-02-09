@@ -1,0 +1,14 @@
+---
+
+- name: Fetch version file
+  s3: bucket={{ app_s3_bucket }} object={{ app_s3_object_prefix }}/version dest={{ app_artifact_tmp_dir }}/version mode=get
+
+- name: Read version file
+  command: cat {{ app_artifact_tmp_dir }}/version
+  register: version
+
+- name: Set app_version
+  set_fact: app_version={{ version.stdout }}
+
+- name: Fetch app artifact
+  s3: bucket={{ app_s3_bucket }} object={{ app_s3_object_prefix }}/{{ app_artifact }} dest={{ app_artifact_tmp_dir }}/{{ app_artifact }} mode=get

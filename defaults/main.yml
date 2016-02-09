@@ -18,3 +18,8 @@ app_admin_port: 9081
 app_mongo_port: 27017
 app_mongo_host: localhost
 app_mongo_db:   "{{ app_name }}"
+
+# S3
+app_install_from_s3: true
+app_s3_bucket: ee-microdc
+app_s3_object_prefix: "/services/{{ app_name }}"

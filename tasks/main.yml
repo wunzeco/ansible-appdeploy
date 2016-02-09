@@ -31,8 +31,12 @@
 - name: Create app artifact tmp dir
   file: path={{ app_artifact_tmp_dir }} mode=0755 state=directory
 
+- include: fetch-from-s3.yml
+  when: app_install_from_s3
+
 - name: Fetch app artifact
   get_url: url={{ app_artifact_url }} dest={{ app_artifact_tmp_dir }}/{{ app_artifact }} 
+  when: not app_install_from_s3
 
 - name: Decompress app artifact
   unarchive: src={{ app_artifact_tmp_dir }}/{{ app_artifact }} dest={{ app_artifact_tmp_dir }} owner={{ app_user }} group={{ app_group }}
